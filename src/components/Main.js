@@ -2,6 +2,7 @@ import React from 'react';
 import Select from 'react-select';
 
 import Chart from 'react-google-charts';
+import axios from 'axios';
 
 const options = [
   { value: 0, label: '0 - Lights Off' },
@@ -27,9 +28,16 @@ class Main extends React.Component {
     state = {
       selectedOption: null,
       selectedOptionVal: 0,
+      data:[],
     }
 
     handleChange = selectedOption => {
+      axios.post(`http:localhost:8000/api/predict/digit/${selectedOption.value}`)
+      .then((res) => {
+          this.setState({ data:res.data})
+      })
+      .catch((err) => console.log(err.data))
+
       this.setState({ selectedOption: selectedOption });
       if((selectedOption.value === 1) || (selectedOption.value === 0)) {
         this.setState({ selectedOptionVal: selectedOption.value });
